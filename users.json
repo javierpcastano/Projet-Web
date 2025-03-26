@@ -1,0 +1,34 @@
+[
+    {
+        "email": "javier.pena-castano@etu-upsaclay.fr",
+        "username": "javiichu",
+        "password": "javier123",
+        "role": [
+            "eljefe"
+        ]
+    },
+    {
+        "email": "",
+        "username": "",
+        "password": "",
+        "role": [
+            ""
+        ]
+    },
+    {
+        "email": "",
+        "username": "",
+        "password": "",
+        "role": [
+            ""
+        ]
+    },
+    {
+        "email": "aidanlachupa@etu-upsaclay.fr",
+        "username": "a",
+        "password": "f",
+        "role": [
+            "Cuisinier"
+        ]
+    }
+]
