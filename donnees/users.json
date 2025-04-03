@@ -1,0 +1,18 @@
+[
+    {
+        "email": "javier.pena-castano@etu-upsaclay.fr",
+        "username": "javier.pena-castano@etu-upsaclay.fr",
+        "password": "javier123",
+        "role": [
+            "Cuisinier"
+        ]
+    },
+    {
+        "email": "ss",
+        "username": "zz",
+        "password": "javier123",
+        "role": [
+            "DemandeTraducteur"
+        ]
+    }
+]
