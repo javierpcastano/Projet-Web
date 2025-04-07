@@ -5,7 +5,8 @@
         "password": "javier123",
         "role": [
             "Cuisinier"
-        ]
+        ], 
+        "fav" : []
     },
     {
         "email": "ss",
@@ -13,6 +14,7 @@
         "password": "javier123",
         "role": [
             "DemandeTraducteur"
-        ]
+        ], 
+        "fav" : []
     }
 ]

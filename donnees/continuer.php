@@ -8,6 +8,7 @@ $emailToCheck = $_POST["email"];
 $username = $_POST["username"];
 $password = $_POST["password"];
 $role = $_POST["role"] ?? ["Cuisinier"];
+$fav = [],
 
 // Initialiser un indicateur pour l'existence de l'email
 $emailExists = false;
@@ -27,6 +28,7 @@ if (!$emailExists) {
         "username" => $username,
         "password" => $password,
         "role" => $role,
+        "fav" => $fav,
     ];
 
     $data[] = $newUser;
