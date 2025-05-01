@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php 
+require_once 'check_session.php';
+?>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -166,6 +170,15 @@
       });
     }
 
+    function logout() {
+        $.ajax({
+            method: "POST",
+            url: "logout.php"
+        }).done(function() {
+            location.reload();
+        });
+    }
+
     function Continuer() {
     const data = {
         email: $('#email1').val(),
@@ -185,10 +198,7 @@
         if (parsedResponse === true) {
             $("#nouvcompte").html("L'email <strong>" + data.email + "</strong> existe déjà. Veuillez modifier l'adresse mail.");
         } else {
-            $("#inscrire").css("display", "none");
-            $("#signinn").css("display", "none");
-            $("#loginn").css("display", "none");
-            $("#connecter").css("display", "none");
+            location.reload(); // Recharge la page pour afficher le dashboard
         }
     }).fail(function(e) {
         console.log(e);
@@ -196,43 +206,31 @@
     });
 }
 
-function connection() {
-    const data = {
-        email: $('#email').val(),
-        password: $('#password').val(),
-    };
+    function connection() {
+        console.log("Bouton Login cliqué"); // Debug 1
 
-    $.ajax({
-        method: "POST",
-        url: "connection.php",
-        data: data
-    }).done(function(response) {
-        try {
+        const data = {
+            email: $('#email').val(),
+            password: $('#password').val(),
+        };
+
+        $.ajax({
+            method: "POST",
+            url: "connection.php",
+            data: data
+        }).done(function(response) {
             const parsedResponse = JSON.parse(response);
-            console.log(parsedResponse); // Ajoutez ceci pour voir la réponse dans la console
+            console.log(parsedResponse);
+            if (parsedResponse === true) {
+                location.reload(); // Recharge la page pour afficher le dashboard
 
-            if (parsedResponse === "email_not_found") {
-                $("#Connexion").html("L'email <strong>" + $('#email').val() + "</strong> n'a pas de compte associé. Veuillez modifier l'adresse mail.");
-            } else if (parsedResponse === "wrong_password") {
-                $("#Connexion").html("Le mot de passe est incorrect. Veuillez réessayer.");
-            } else if (parsedResponse === "success") {
-                $("#Connexion").html("Connexion réussie !");
-                $("#inscrire").css("display", "none");
-                $("#signinn").css("display", "none");
-                $("#loginn").css("display", "none");
-                $("#connecter").css("display", "none");
             } else {
-                $("#Connexion").html("Erreur inattendue. Veuillez réessayer.");
+                $("#Connexion").html("<span class='error'>Identifiants incorrects</span>");
             }
-        } catch (error) {
-            console.error("Erreur de parsing JSON:", error);
-            $("#Connexion").html("Erreur de traitement de la réponse. Veuillez réessayer.");
-        }
-    }).fail(function(e) {
-        console.log(e);
-        $("#message").html("<span class='ko'> Error: network problem </span>");
-    });
-}
+        }).fail(function(error) {
+            console.error("Erreur AJAX:", error); // Debug 3
+        });
+    }
 
 
       function addIngredient() {
@@ -250,9 +248,29 @@ function connection() {
         container.appendChild(div);
       }
     </script>
+
   </head>
   <body>
-    <div id="namerecette" style="display:block">
+
+  <div id="dashboard" style="display:<?php echo isLoggedIn() ? 'block' : 'none'; ?>">
+    <h2>Bienvenue, <?php echo htmlspecialchars($_SESSION['user']['username'] ?? 'Invité'); ?></h2>
+    <p>Email: <?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?></p>
+    <p>Role: <?php echo implode(', ', $_SESSION['user']['role'] ?? []); ?></p>
+    
+    <!-- Section réservée aux chefs -->
+    <?php if(in_array('DemandeChef', $_SESSION['user']['role'] ?? [])): ?>
+        <div class="chef-section">
+            <h3>Outils Chef</h3>
+            <!-- Contenu spécifique -->
+        </div>
+    <?php endif; ?>
+    
+    <button onclick="logout()">Déconnexion</button>
+</div>
+
+
+<div id="namerecette" style="display:<?php echo (isLoggedIn() && in_array('DemandeChef', $_SESSION['user']['role'] ?? [])) ? 'block' : 'none'; ?>">
+    <h1>Ajouter une recette</h1>
     <label for="name">Recipe Name:</label>
     <input type="text" id="name" name="name" required><br><br>
     <input type="hidden" name="fullForm" value="1">
@@ -299,7 +317,7 @@ function connection() {
     <label>Recette enregistrée avec succès !</label><br>
     </div>
 
-    <div id="signinn" style="display:block" >
+    <div id="signinn" style="display:<?php echo !isLoggedIn() ? 'block' : 'none'; ?>" >
     <button onclick="signin()" >Sign in</button>
     <p id="hola"></p>
     </div>
@@ -327,7 +345,7 @@ function connection() {
     <p id="nouvcompte"></p>
 </div>
 
-    <div id="loginn" style="display:block">
+    <div id="loginn" style="display:<?php echo !isLoggedIn() ? 'block' : 'none'; ?>">
     <button onclick="login()" >Log in</button>
     <p id="hola1"></p>
     </div>
