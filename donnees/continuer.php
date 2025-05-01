@@ -1,19 +1,16 @@
 <?php
-// Lire le fichier JSON contenant les utilisateurs
+session_start(); // Démarre la session
+
 $jsonString = file_get_contents('users.json');
 $data = json_decode($jsonString, true);
 
-// Récupérer les données depuis la requête POST
 $emailToCheck = $_POST["email"];
 $username = $_POST["username"];
 $password = $_POST["password"];
 $role = $_POST["role"] ?? ["Cuisinier"];
-$fav = [],
 
-// Initialiser un indicateur pour l'existence de l'email
 $emailExists = false;
 
-// Vérifier si l'email existe dans la liste des utilisateurs
 foreach ($data as $user) {
     if (strcasecmp($user['email'], $emailToCheck) == 0) {
         $emailExists = true;
@@ -21,21 +18,26 @@ foreach ($data as $user) {
     }
 }
 
-// Si l'email n'existe pas, ajouter le nouvel utilisateur
 if (!$emailExists) {
     $newUser = [
         "email" => $emailToCheck,
         "username" => $username,
         "password" => $password,
         "role" => $role,
-        "fav" => $fav,
+        "fav" => [],
     ];
 
     $data[] = $newUser;
-    
     file_put_contents('users.json', json_encode($data, JSON_PRETTY_PRINT));
+    
+    // Crée la session pour le nouvel utilisateur
+    $_SESSION['user'] = [
+        'email' => $emailToCheck,
+        'username' => $username,
+        'role' => $role,
+        'logged_in' => true
+    ];
 }
 
-// Retourner le résultat de la vérification sous forme de JSON
 echo json_encode($emailExists);
 ?>
