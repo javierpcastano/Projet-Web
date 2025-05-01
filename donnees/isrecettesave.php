@@ -15,7 +15,9 @@ $newRecipe = [
     "steps" => $steps,
     "timers" => $timers,
     "imageURL" => $_POST["imageURL"] ?? '',
-    "originalURL" => $_POST["originalURL"] ?? ''
+    "originalURL" => $_POST["originalURL"] ?? '', 
+    "like" => 0, 
+    "Commentaire" => []
 ];
 
 $data[] = $newRecipe;

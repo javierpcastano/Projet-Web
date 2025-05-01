@@ -4,8 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Projet Javier Peña et Aidan Barouk</title>
     <script>
+
+
+    function Commentaire(button){
+
+        commentaire = $(button).closest('.zone-commentaire').find('.champ-commentaire').val();
+
+        const data = {
+            Commentaire: commentaire,
+            nom: $(button).data("name")
+        };
+
+        console.log("Commentaire :", data);
+     
+        $.ajax({
+            method: "POST",
+            url: "isCOMsave.php",
+            data: data
+        }).done(function(e) {
+
+            const listeCommentaires = $(button).closest('.recette').find('.commentaires-liste'); 
+            listeCommentaires.append(`<div>${commentaire}</div>`);
+
+            $(button).closest('.zone-commentaire').hide()
+            $("#zone-commentaire").css("display", "block")
+
+        }).fail(function(e) {
+            console.log(e);
+            $("#message").html("<span class='ko'> Error: network problem </span>");
+        });
+    }
+
+
+    function Fav(button){
+        const fav = $(button).data("name");
+        const isLiked = $(button).hasClass("liked");
+
+        if (!isLiked) {
+            $.ajax({
+                method: "GET",
+                url: "fav.php",
+                data: {"fav": fav}
+            }).done(function(e) {
+                $(button).addClass("liked");
+                $(button).find(".heart-icon").removeClass("fa-regular").addClass("fa-solid").css("color", "red");
+                let like = parseInt($(button).find(".likeCount").text());
+                $(button).find(".likeCount").text(like + 1);
+            });
+        } else {
+            $.ajax({
+                method: "GET",
+                url: "unfav.php",
+                data: {"fav": fav}
+            }).done(function(e) {
+                $(button).removeClass("liked");
+                $(button).find(".heart-icon").removeClass("fa-solid").addClass("fa-regular").css("color", "");
+                
+                let like = parseInt($(button).find(".likeCount").text());
+                $(button).find(".likeCount").text(like - 1);
+            });
+        }
+    }
+
 
     function submit() {
         console.log($('#name').val())
@@ -15,11 +78,12 @@
         data: {"recette": $('#name').val()}
       }).done(function(e) {
         console.log(e)
-        if(e!="false")
+        if(e!="false"){
           $("#feedbackname").html("La recette <strong>" +$('#name').val()+ "</strong> existe déjà. Veuillez modifier le titre de la recette.");
-        else
+        }else{
             $("#formulaire").css("display", "block")
             $("#Succes").css("display", "none")
+        }
     }).fail(function(e) {
         console.log(e);
         $("#message").html("<span class='ko'> Error: network problem </span>");
@@ -170,48 +234,6 @@ function connection() {
     });
 }
 
-/*
-function Research() {
-    const searchQuery = $('#search').val().trim(); // Assurez-vous de supprimer les espaces
-
-    $.ajax({
-        method: "GET",
-        url: "issearchexiste.php",
-        data: { query: searchQuery },
-    }).done(function(response) {
-        console.log(response);
-        const parsedResponse = JSON.parse(response);
-
-        if (parsedResponse.length === 0) {
-            $("#feedbackname").html("Aucune recette trouvée correspondant à votre recherche.");
-        } else {
-            let resultHtml = "<h3>Recette trouvée :</h3>";
-            parsedResponse.forEach(function(recipe) {
-                resultHtml += "<div><strong>Nom :</strong> " + recipe.name + "</div>";
-                resultHtml += "<div><strong>Auteur :</strong> " + recipe.Author + "</div>";
-                resultHtml += "<div><img src='" + recipe.imageURL + "' alt='Image de " + recipe.name + "' style='max-width: 100%; height: auto;'></div>";
-                resultHtml += "<div><strong>Ingrédients :</strong><ul>";
-                recipe.ingredients.forEach(function(ingredient) {
-                    resultHtml += "<li>" + ingredient.quantity + " " + ingredient.name + " (" + ingredient.type + ")</li>";
-                });
-                resultHtml += "</ul></div>";
-                resultHtml += "<div><strong>Étapes :</strong><ol>";
-                recipe.steps.forEach(function(step) {
-                    resultHtml += "<li>" + step + "</li>";
-                });
-                resultHtml += "</ol></div>";
-                resultHtml += "<div><strong>Timers :</strong> " + recipe.timers.join(", ") + " minutes</div>";
-                resultHtml += "<div><a href='" + recipe.originalURL + "' target='_blank'>Lien original</a></div>";
-            });
-            $("#feedbackname").html(resultHtml);
-        }
-    }).fail(function(e) {
-        console.log(e);
-        $("#message").html("<span class='ko'> Error: network problem </span>");
-    });
-}
-*/
-    $role = $_SESSION["role"]; 
 
       function addIngredient() {
         let container = document.getElementById("ingredientsContainer");
@@ -230,20 +252,6 @@ function Research() {
     </script>
   </head>
   <body>
-
-<!--
-  if ($role == "chef")   {
-           echo '<div id="namerecette" style="display:block">';
-           echo '<label for="name">Recipe Name:</label>';
-           echo '<input type="text" id="name" name="name" required><br><br>';
-           echo '<input type="hidden" name="fullForm" value="1">';
-           echo '<button onclick="submit()" >Continuer</button>';
-           echo '<p id="feedbackname">  </p>';
-           echo '</div>';
-         
-        }
-    ?>
-    -->
     <div id="namerecette" style="display:block">
     <label for="name">Recipe Name:</label>
     <input type="text" id="name" name="name" required><br><br>
@@ -394,10 +402,41 @@ function Research() {
                 </ol>
                 <h3>Temps estimé :</h3>
                 <p>${recipe.timers.reduce((a, b) => a + b, 0)} minutes</p>
+                
+                <button class="fav" 
+                    data-name="${recipe.nameFR || recipe.name}" 
+                    onclick="Fav(this)">
+                    <i class="fa-regular fa-heart heart-icon"></i> <span class="likeCount">${recipe.like}</span>
+                </button>
+                <p id="fav"></p>
+
+                
+                <h3>Feedback </h3>
+
+                <div class="recette">
+    <h2>${recipe.nameFR || recipe.name}</h2>
+
+    <div class="commentaires-liste">
+        ${recipe.Commentaire.map(commentaire => `<div>${commentaire}</div><br>`).join("")}
+    </div>
+
+    <div class="zone-commentaire">
+        <label>Ajouter un Commentaire</label><br>
+       <textarea class="champ-commentaire" name="commentaire" rows="5" cols="40"></textarea><br>
+        <button class="ajout-commentaire" data-name="${recipe.nameFR || recipe.name}" onclick="Commentaire(this)">Ajouter</button>
+    </div>
+</div>
+
+
+
+
+
+
             `;
 
             $("#recipeDetails").html(detailsHTML).fadeIn();
         }
+
 
         $("#searchInput").on("input", function() {
             const searchText = $(this).val().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -407,6 +446,8 @@ function Research() {
                 $("#recipeDetails").hide();
                 return;
             }
+
+            recipes = Object.values(recipes);
 
             const filteredRecipes = recipes.filter(recipe =>
                 (recipe.nameFR && recipe.nameFR.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchText)) ||
@@ -418,7 +459,31 @@ function Research() {
         });
 
         fetchRecipes();
+
+        
     </script>
 
+ 
+
   </body>
+
+    <style>
+        .fav {
+            background-color: transparent; 
+            border: none;
+            cursor: pointer;               
+            font-size: 18px; 
+            padding: 0;
+        }
+
+        .fav:hover .heart-icon, .fav:hover .heart {
+             transform: scale(1.2);
+             transition: transform 0.2s;
+            }
+    </style>
+
+
+
+
+
 </html>
