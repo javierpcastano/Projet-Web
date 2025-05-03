@@ -12,44 +12,67 @@ require_once 'check_session.php';
     <title>Projet Javier Peña et Aidan Barouk</title>
     <script>
 
-    function changerRole(username, newRole) {
-        $.ajax({
-            url: 'isRolechange.php',
-            type: 'POST',
-            data: { username: username, newRole: newRole },
-            dataType: 'json'
-        }).done(function(response) {
-            if (response.status === "success") {
-                ListUtilisateur(); 
+function changerRole(email, username, newRole) {
+    $.ajax({
+        url: 'isRolechange.php',
+        type: 'POST',
+        data: {
+            email: email,
+            username: username,
+            newRole: newRole
+        },
+        dataType: 'json'
+    }).done(function(response) {
+        if (response.status === "success") {
+            ListUtilisateur(); // Rafraîchit la liste
+            // Si l'utilisateur modifié est l'utilisateur actuel
+            if ("<?php echo $_SESSION['user']['email'] ?? ''; ?>" === email) {
+                location.reload();
             }
-        }).fail(function() {
-            console.log(e);
-            $("#message").html("<span class='ko'> Error: network problem </span>");
-        });
-    }
+        } else {
+            alert("Erreur: " + (response.message || "Échec de la modification"));
+        }
+    }).fail(function(error) {
+        console.error("Erreur:", error);
+        alert("Erreur réseau");
+    });
+}
 
-    function ListUtilisateur() {
+
+function ListUtilisateur() {
         $.ajax({
             url: 'ListUtilisateur.php',
             type: 'POST',
             dataType: 'json'
         }).done(function(data) {
             if (data.users && data.users.length > 0) {
-                let text = '<table><tr><th>Nom</th><th>Rôle actuel</th><th>Nouveau rôle</th><th>Action</th></tr>';
+                let text = '<table><tr><th>Mail</th><th>Nom</th><th>Rôle actuel</th><th>Nouveau rôle</th><th>Action</th></tr>';
                 data.users.forEach(function(user, index) {
+                    const isBoth = Array.isArray(user.role) && 
+                                user.role.includes('DemandeChef') && 
+                                user.role.includes('DemandeTraducteur');
+
                     text += `
                         <tr>
+                            <td>${user.email}</td>
                             <td>${user.username}</td>
-                            <td>${Array.isArray(user.role) ? user.role.join(", ") : user.role}</td>
+                            <td>${user.role.join(", ")}</td>
                             <td>
                                 <select id="roleSelect_${index}">
-                                    <option value="Chef">DemandeChef->Chef</option>
-                                    <option value="Traducteur">DemandeTraducteur->Traducteur</option>
+                                    ${isBoth ? `
+                                        <option value='["Chef","Traducteur"]'>DemandeChef+Traducteur → Chef+Traducteur</option>
+                                        <option value='["Chef"]'>Conversion en Chef uniquement</option>
+                                        <option value='["Traducteur"]'>Conversion en Traducteur uniquement</option>
+                                    ` : `
+                                        ${user.role.includes('DemandeChef') ? 
+                                            '<option value=\'["Chef"]\'>DemandeChef → Chef</option>' : ''}
+                                        ${user.role.includes('DemandeTraducteur') ? 
+                                            '<option value=\'["Traducteur"]\'>DemandeTraducteur → Traducteur</option>' : ''}
+                                    `}
                                 </select>
-
                             </td>
                             <td>
-                                <button class="primary" onclick="changerRole('${user.username}', document.getElementById('roleSelect_${index}').value)">Valider</button>
+                                <button class="primary" onclick="changerRole('${user.email}', '${user.username}', document.getElementById('roleSelect_${index}').value)">Valider</button>
                             </td>
                         </tr>
                     `;
@@ -57,11 +80,11 @@ require_once 'check_session.php';
                 text += '</table>';
                 $('#userListContent').html(text);
             } else {
-                $('#userListContent').html('<p>Aucun utilisateur</p>');
+                $('#userListContent').html('<p>Aucun utilisateur à valider</p>');
             }
-        }).fail(function() {
-            console.log(e);
-            $("#message").html("<span class='ko'> Error: network problem </span>");
+        }).fail(function(error) {
+            console.error("Erreur:", error);
+            $("#message").html("<span class='error'>Erreur réseau</span>");
         });
     }
 
@@ -137,6 +160,7 @@ require_once 'check_session.php';
         console.log(e)
         if(e!="false"){
           $("#feedbackname").html("La recette <strong>" +$('#name').val()+ "</strong> existe déjà. Veuillez modifier le titre de la recette.");
+          $("#Succes").css("display", "none")
         }else{
             $("#formulaire").css("display", "block")
             $("#Succes").css("display", "none")
@@ -276,7 +300,6 @@ require_once 'check_session.php';
             console.log(parsedResponse);
             if (parsedResponse === true) {
                 location.reload(); // Recharge la page pour afficher le dashboard
-
             } else {
                 $("#Connexion").html("<span class='error'>Identifiants incorrects</span>");
             }
@@ -310,19 +333,11 @@ require_once 'check_session.php';
     <p>Email: <?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?></p>
     <p>Role: <?php echo implode(', ', $_SESSION['user']['role'] ?? []); ?></p>
     
-    <!-- Section réservée aux chefs -->
-    <?php if(in_array('DemandeChef', $_SESSION['user']['role'] ?? [])): ?>
-        <div class="chef-section">
-            <h3>Outils Chef</h3>
-            <!-- Contenu spécifique -->
-        </div>
-    <?php endif; ?>
-    
     <button onclick="logout()">Déconnexion</button>
 </div>
 
 
-<div id="namerecette" style="display:<?php echo (isLoggedIn() && in_array('DemandeChef', $_SESSION['user']['role'] ?? [])) ? 'block' : 'none'; ?>">
+<div id="namerecette" style="display:<?php echo (isLoggedIn() && in_array('Chef', $_SESSION['user']['role'] ?? [])) ? 'block' : 'none'; ?>">
     <h1>Ajouter une recette</h1>
     <label for="name">Recipe Name:</label>
     <input type="text" id="name" name="name" required><br><br>
@@ -534,7 +549,7 @@ require_once 'check_session.php';
         
         </script>
             <br><br>
-            <div class="gestion-admin">
+            <div class="gestion-admin" style="display:<?php echo (isLoggedIn() && in_array('Directeur', $_SESSION['user']['role'] ?? [])) ? 'block' : 'none'; ?>">
                 <button  onclick="ListUtilisateur()">Liste des Utilisateurs Demandeurs</button>
             </div>
             <div id="userListModal" class="modal">
