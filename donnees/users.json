@@ -5,16 +5,62 @@
         "password": "javier123",
         "role": [
             "Cuisinier"
-        ], 
-        "fav" : []
+        ]
     },
     {
         "email": "ss",
         "username": "zz",
         "password": "javier123",
+        "role": "Chef"
+    },
+    {
+        "email": "ffff",
+        "username": "ffff",
+        "password": "ffff",
+        "role": "DemandeTraducteur"
+    },
+    {
+        "email": "aidan",
+        "username": "aidan",
+        "password": "123",
+        "role": "Traducteur"
+    },
+    {
+        "email": "javier",
+        "username": "aidan",
+        "password": "123",
+        "role": [
+            "Chef"
+        ]
+    },
+    {
+        "email": "e",
+        "username": "aidan",
+        "password": "123",
+        "role": [
+            "DemandeChef"
+        ]
+    },
+    {
+        "email": "javier",
+        "username": "aidan",
+        "password": "123",
         "role": [
             "DemandeTraducteur"
-        ], 
-        "fav" : []
+        ]
+    },
+    {
+        "email": "javier",
+        "username": "aidan",
+        "password": "123",
+        "role": [
+            "DemandeChef"
+        ]
+    },
+    {
+        "email": "aaaaa",
+        "username": "test",
+        "password": "123",
+        "role": "Chef"
     }
 ]

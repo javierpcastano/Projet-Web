@@ -12,6 +12,59 @@ require_once 'check_session.php';
     <title>Projet Javier Peña et Aidan Barouk</title>
     <script>
 
+    function changerRole(username, newRole) {
+        $.ajax({
+            url: 'isRolechange.php',
+            type: 'POST',
+            data: { username: username, newRole: newRole },
+            dataType: 'json'
+        }).done(function(response) {
+            if (response.status === "success") {
+                ListUtilisateur(); 
+            }
+        }).fail(function() {
+            console.log(e);
+            $("#message").html("<span class='ko'> Error: network problem </span>");
+        });
+    }
+
+    function ListUtilisateur() {
+        $.ajax({
+            url: 'ListUtilisateur.php',
+            type: 'POST',
+            dataType: 'json'
+        }).done(function(data) {
+            if (data.users && data.users.length > 0) {
+                let text = '<table><tr><th>Nom</th><th>Rôle actuel</th><th>Nouveau rôle</th><th>Action</th></tr>';
+                data.users.forEach(function(user, index) {
+                    text += `
+                        <tr>
+                            <td>${user.username}</td>
+                            <td>${Array.isArray(user.role) ? user.role.join(", ") : user.role}</td>
+                            <td>
+                                <select id="roleSelect_${index}">
+                                    <option value="Chef">DemandeChef->Chef</option>
+                                    <option value="Traducteur">DemandeTraducteur->Traducteur</option>
+                                </select>
+
+                            </td>
+                            <td>
+                                <button class="primary" onclick="changerRole('${user.username}', document.getElementById('roleSelect_${index}').value)">Valider</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                text += '</table>';
+                $('#userListContent').html(text);
+            } else {
+                $('#userListContent').html('<p>Aucun utilisateur</p>');
+            }
+        }).fail(function() {
+            console.log(e);
+            $("#message").html("<span class='ko'> Error: network problem </span>");
+        });
+    }
+
 
     function Commentaire(button){
 
@@ -479,9 +532,20 @@ require_once 'check_session.php';
         fetchRecipes();
 
         
-    </script>
-
- 
+        </script>
+            <br><br>
+            <div class="gestion-admin">
+                <button  onclick="ListUtilisateur()">Liste des Utilisateurs Demandeurs</button>
+            </div>
+            <div id="userListModal" class="modal">
+                <div class="modal-body" id="userListContent">
+                    <!-- Les données des utilisateurs seront affichées ici -->
+                </div>
+            </div>
+</div>
+            
+    
+   
 
   </body>
 
