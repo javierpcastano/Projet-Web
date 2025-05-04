@@ -199,6 +199,43 @@ function changerRole(email, username, newRole) {
         $("#message").html("<span class='ko'> Error: network problem </span>");
         });
     }
+    
+    function sauvegarder() {
+        const ingredients = [];
+        $('#ingredientsContainer div').each(function() {
+            const quantity = $(this).find('input[name*="[quantity]"]').val();
+            const name = $(this).find('input[name*="[name]"]').val();
+            const type = $(this).find('input[name*="[type]"]').val();
+            if (name) {
+                ingredients.push({ quantity, name, type });
+            }
+        });
+
+        const data = {
+            name: $('#name').val(),
+            nameFR: $('#nameFR').val(),
+            Author: $('#Author').val(),
+            Without: $('input[name="Without[]"]:checked').map(function() { return this.value; }).get(),
+            steps: $('#steps').val(),
+            timers: $('#timers').val(),
+            ingredients: ingredients,
+            imageURL: $('#imageURL').val(),
+            originalURL:$('#originalURL').val()
+        };
+
+        $.ajax({
+            method: "POST",
+            url: "isrecettesave.php",
+            data: data
+        }).done(function(e) {
+            $("#formulaire").css("display", "none")
+            $("#namerecette").css("display", "block")
+            $("#Succes").css("display", "block")
+        }).fail(function(e) {
+            console.log(e);
+            $("#message").html("<span class='ko'> Error: network problem </span>");
+        });
+    }
 
     function sauvegarderTR() {
         const recipeName = $("#recipeNameDisplay").text();
