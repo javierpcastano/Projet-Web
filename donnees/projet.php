@@ -39,7 +39,7 @@ function changerRole(email, username, newRole) {
 }
 
 
-function ListUtilisateur() {
+    function ListUtilisateur() {
         $.ajax({
             url: 'ListUtilisateur.php',
             type: 'POST',
@@ -157,13 +157,15 @@ function ListUtilisateur() {
         url: "isrectteexiste.php",
         data: {"recette": $('#name').val()}
       }).done(function(e) {
+        const parsedResponse = JSON.parse(e);
         console.log(e)
-        if(e!="false"){
+        if(parsedResponse === true){
           $("#feedbackname").html("La recette <strong>" +$('#name').val()+ "</strong> existe déjà. Veuillez modifier le titre de la recette.");
-          $("#Succes").css("display", "none")
+          $("#Succes").css("display", "none");
         }else{
+            $("#feedbackname").html("")
             $("#formulaire").css("display", "block")
-            $("#Succes").css("display", "none")
+            $("#Succes").css("display", "none");
         }
     }).fail(function(e) {
         console.log(e);
@@ -171,40 +173,100 @@ function ListUtilisateur() {
       });
     }
 
-    function sauvegarder() {
-        const ingredients = [];
-        $('#ingredientsContainer div').each(function() {
-            const quantity = $(this).find('input[name*="[quantity]"]').val();
-            const name = $(this).find('input[name*="[name]"]').val();
-            const type = $(this).find('input[name*="[type]"]').val();
-            if (name) {
-                ingredients.push({ quantity, name, type });
+    function submitTR() {
+        
+        $.ajax({
+            method: "GET",
+            url: "isrectteexiste.php",
+            data: {"recette": $('#nameTR').val()}
+        }).done(function(response) {
+            const parsedResponse = JSON.parse(response);
+            console.log(parsedResponse)
+            if(parsedResponse === true) {
+                // Cache les autres éléments
+                $("#formulaire2").css("display", "block")
+                $("#Succes2").css("display", "none")
+                $("#recipeNameDisplay").text($('#nameTR').val());
+                loadRecipeForTranslation($('#nameTR').val());
+                $("#traduire").html("");
+        
+            } else {
+                $("#traduire").html("La recette <strong>" + $('#nameTR').val() + "</strong> n'existe pas.");
+                $("#formulaire2").css("display", "none");
             }
+        }).fail(function(e) {
+        console.log(e);
+        $("#message").html("<span class='ko'> Error: network problem </span>");
+        });
+    }
+
+    function sauvegarderTR() {
+        const recipeName = $("#recipeNameDisplay").text();
+        const ingredientsFR = [];
+        
+        $(".ingredient-row").each(function() {
+            ingredientsFR.push({
+                nameFR: $(this).find("input").val()
+            });
         });
 
         const data = {
-            name: $('#name').val(),
-            nameFR: $('#nameFR').val(),
-            Author: $('#Author').val(),
-            Without: $('input[name="Without[]"]:checked').map(function() { return this.value; }).get(),
-            steps: $('#steps').val(),
-            timers: $('#timers').val(),
-            ingredients: ingredients,
-            imageURL: $('#imageURL').val(),
-            originalURL:$('#originalURL').val()
+            name: recipeName,
+            nameFR: $("#nameFR_TR").val(),
+            stepsFR: $("#stepsTR").val().split("\n"),
+            ingredientsFR: ingredientsFR
         };
+
+        console.log("Données à envoyer:", data); // Debug
 
         $.ajax({
             method: "POST",
-            url: "isrecettesave.php",
-            data: data
-        }).done(function(e) {
-            $("#formulaire").css("display", "none")
-            $("#namerecette").css("display", "block")
-            $("#Succes").css("display", "block")
-        }).fail(function(e) {
-            console.log(e);
-            $("#message").html("<span class='ko'> Error: network problem </span>");
+            url: "isrecetteupdate.php",
+            data: JSON.stringify(data), // Envoie en JSON stringifié
+            contentType: "application/json", // Important
+            dataType: "json"
+        }).done(function(response) {
+            console.log("Réponse du serveur:", response);
+            if(response.status === "success") {
+                $("#Succes2").show();
+                $("#formulaire2").hide();
+            } else {
+                $("#recetteelements2").html("<span class='error'>" + (response.message || "Erreur inconnue") + "</span>");
+            }
+        }).fail(function(error) {
+            console.error("Erreur:", error);
+            $("#recetteelements2").html("<span class='error'>Échec de la connexion au serveur</span>");
+        });
+    }
+
+    function loadRecipeForTranslation(recipeName) {
+        $.getJSON("recettes.json", function(data) {
+            const recipe = data.find(r => 
+                r.name.trim().toLowerCase() === recipeName.toLowerCase() || 
+                (r.nameFR && r.nameFR.trim().toLowerCase() === recipeName.toLowerCase())
+            );
+
+            if (recipe) {
+                // Français
+                $("#nameFR_TR").val(recipe.nameFR || "");
+                
+                // Ingrédients
+                $("#ingredientsContainerTR").empty();
+                recipe.ingredients.forEach((ing, index) => {
+                    $("#ingredientsContainerTR").append(`
+                        <div class="ingredient-row">
+                            <p><strong>Original:</strong> ${ing.quantity} ${ing.name}</p>
+                            <input type="text" 
+                                id="ingredientFR_${index}" 
+                                value="${ing.nameFR || ''}" 
+                                placeholder="Traduction française">
+                        </div>
+                    `);
+                });
+
+                // Étapes
+                $("#stepsTR").val(recipe.stepsFR || recipe.steps.join("\n"));
+            }
         });
     }
 
@@ -430,9 +492,37 @@ function ListUtilisateur() {
 
     </div>
 
+    <div id="namerecette2" style="display:<?php echo (isLoggedIn() && in_array('Traducteur', $_SESSION['user']['role'] ?? [])) ? 'block' : 'none'; ?>">
+    <h1>Traduire une recette</h1>
+    <label for="nameTR">Recipe Name:</label>
+    <input type="text" id="nameTR" name="nameTR" required><br><br>
+    <input type="hidden" name="fullForm" value="1">
+    <button onclick="submitTR()" > Vérifier</button>
+    <p id="traduire">  </p>
+    </div>
     
-</div>
+    <div id="formulaire2" style="display:none">
+    <h2>Traduction de la recette: <span id="recipeNameDisplay"></span></h2>
+    
+    <label for="nameFR">Nom français:</label>
+    <input type="text" id="nameFR_TR" name="nameFR"><br><br>
+    
+    <h3>Traduction des ingrédients:</h3>
+    <div id="ingredientsContainerTR"></div>
+    
+    <h3>Traduction des étapes:</h3>
+    <textarea id="stepsTR" name="steps" rows="5" cols="40"></textarea><br><br>
+    
+    <button onclick="sauvegarderTR()">Enregistrer la traduction</button>
+    <p id="recetteelements2"></p>
+    </div>
 
+    <div id="Succes2" style="display:none">
+    <label>Traduction enregistrée avec succès !</label><br>
+    </div>
+
+
+  
 
     <h1>Rechercher une recette</h1>
     <input type="text" id="searchInput" class="search-bar" placeholder="Rechercher une recette...">
@@ -476,7 +566,8 @@ function ListUtilisateur() {
             if (!recipe) return;
 
             let detailsHTML = `
-                <h2>${recipe.nameFR || recipe.name}</h2>
+                <h2>${recipe.nameFR}</h2>
+                <h2>${recipe.name}</h2>
                 <img src="${recipe.imageURL}" alt="${recipe.nameFR || recipe.name}">
                 <h3>Ingrédients :</h3>
                 <ul>
@@ -484,7 +575,7 @@ function ListUtilisateur() {
                 </ul>
                 <h3>Étapes :</h3>
                 <ol>
-                    ${recipe.steps.map(step => `<li>${step}</li>`).join("")}
+                    ${recipe.steps.map(step => `<li>${step}</li>`).join("") || recipe.stepsFR.map(step => `<li>${step}</li>`).join("")}
                 </ol>
                 <h3>Temps estimé :</h3>
                 <p>${recipe.timers.reduce((a, b) => a + b, 0)} minutes</p>
@@ -557,30 +648,8 @@ function ListUtilisateur() {
                     <!-- Les données des utilisateurs seront affichées ici -->
                 </div>
             </div>
-</div>
+
             
-    
-   
-
   </body>
-
-    <style>
-        .fav {
-            background-color: transparent; 
-            border: none;
-            cursor: pointer;               
-            font-size: 18px; 
-            padding: 0;
-        }
-
-        .fav:hover .heart-icon, .fav:hover .heart {
-             transform: scale(1.2);
-             transition: transform 0.2s;
-            }
-    </style>
-
-
-
-
 
 </html>
