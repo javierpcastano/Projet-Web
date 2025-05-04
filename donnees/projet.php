@@ -245,21 +245,21 @@ function changerRole(email, username, newRole) {
 
     /*Cette fonction va modifier els traduction de la recette en question */
     function sauvegarderTR() {
-        const recipeName = $("#recipeNameDisplay").text();
-        const ingredientsFR = [];
-        
-        $(".ingredient-row").each(function() {
-            ingredientsFR.push({
-                nameFR: $(this).find("input").val()
-            });
-        });
-
-        const data = {
-            name: recipeName,
-            nameFR: $("#nameFR_TR").val(),
-            stepsFR: $("#stepsTR").val().split("\n"),
-            ingredientsFR: ingredientsFR
-        };
+      const recipeName = $("#recipeNameDisplay").text();
+      const ingredientsFR = {};
+      
+      $(".ingredient-row").each(function(index) {
+          ingredientsFR[index] = {
+              nameFR: $(this).find("input").val()
+          };
+      });
+  
+      const data = {
+          name: recipeName,
+          nameFR: $("#nameFR_TR").val(),
+          stepsFR: $("#stepsTR").val().split("\n"),
+          ingredientsFR: ingredientsFR
+      };
 
         console.log("Données à envoyer:", data); // Debug
 
