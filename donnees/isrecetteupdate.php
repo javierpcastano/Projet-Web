@@ -22,11 +22,6 @@ $filePath = __DIR__ . '/recettes.json';
 $jsonString = file_get_contents($filePath);
 $data = json_decode($jsonString, true);
 
-if ($data === null) {
-    echo json_encode(["status" => "error", "message" => "Fichier recettes.json corrompu"]);
-    exit;
-}
-
 $found = false;
 foreach ($data as &$recipe) {
     if (strcasecmp($recipe['name'], $updatedData['name']) === 0) {
@@ -51,11 +46,6 @@ foreach ($data as &$recipe) {
         }
         break;
     }
-}
-
-if (!$found) {
-    echo json_encode(["status" => "error", "message" => "Recette non trouvée"]);
-    exit;
 }
 
 // Sauvegarde avec verrou pour éviter les conflits
