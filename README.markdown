@@ -116,9 +116,6 @@ function Fav(button) {
 }
 ```
 
-#### Galère Résolue :
-- **Double-clics intempestifs** : si vous cliquiez trop vite, ça envoyait plusieurs requêtes et les likes devenaient fous. On a désactivé le bouton temporairement après chaque clic pour calmer le jeu.
-
 ### 3.4. Interface Admin
 
 Les admins ont des pouvoirs spéciaux pour gérer les utilisateurs.
