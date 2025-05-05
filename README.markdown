@@ -170,8 +170,6 @@ La **gestion des sessions** nous a possé beaucoup de problèmes, surtout le fon
 - **Sessions perdues** : parfois, elles n’étaient pas initialisées, ou elles expiraient sans prévenir. On a appris à mettre `session_start()` partout et à vérifier les sessions avec `check_session.php`.
 - **Rôles capricieux** : un utilisateur pouvait être "Admin" sur une page, puis perdre son rôle sur une autre. On a dû s’assurer que `$_SESSION` soit toujours à jour, surtout quand un admin changeait un rôle.
 
-Ça a été un vrai casse-tête, mais à force de tests et d’ajustements, on a stabilisé le tout.
-
 ## 5. Conclusion
 
 Ce projet, c’était comme préparer une recette compliquée : parfois, ça rate, mais on apprend à chaque essai. On a réussi à livrer une application qui fonctionne, avec des fonctionnalités sympas comme les likes, les commentaires, et une gestion des recettes au top. Les appels AJAX ont rendu l’expérience fluide, et l’interface admin donne un vrai contrôle.
