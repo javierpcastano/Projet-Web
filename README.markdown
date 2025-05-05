@@ -164,11 +164,11 @@ On s’est inspirés de code trouvé sur Internet, notamment pour gérer les acc
 
 ## 4. Les Grosses Difficultés : Les Sessions et les Rôles
 
-S’il y a une chose qui nous a donné des sueurs froides, c’est la **gestion des sessions**. Au début, on ne comprenait pas bien comment ça marchait. Voici ce qu’on a traversé :
+La **gestion des sessions** nous a possé beaucoup de problèmes, surtout le fonctionnement et la mise a jour de l'utlisateur connecté. Au début, on ne comprenait pas bien comment ça marchait. Voici ce qu’on a traversé :
 
+- **Manque de connnection**: Au tout début, en inicié pas une session juste on modifier les valeurs de `user.json` pour l'inscription, ou on verifier que le mail existait pour la connection, sans inicier une session réelle.
 - **Sessions perdues** : parfois, elles n’étaient pas initialisées, ou elles expiraient sans prévenir. On a appris à mettre `session_start()` partout et à vérifier les sessions avec `check_session.php`.
 - **Rôles capricieux** : un utilisateur pouvait être "Admin" sur une page, puis perdre son rôle sur une autre. On a dû s’assurer que `$_SESSION` soit toujours à jour, surtout quand un admin changeait un rôle.
-- **Sécurité bancale** : on a réalisé que les mots de passe étaient en clair dans `users.json`. On n’a pas eu le temps de passer à `password_hash()`, mais c’est prévu pour plus tard.
 
 Ça a été un vrai casse-tête, mais à force de tests et d’ajustements, on a stabilisé le tout.
 
