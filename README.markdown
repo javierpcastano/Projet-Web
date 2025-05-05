@@ -181,7 +181,5 @@ Ce projet, c’était comme préparer une recette compliquée : parfois, ça rat
 - **Sécurité à améliorer** : stocker les mots de passe en clair, c’est une erreur qu’on ne refera pas.
 - **Inspiration bienvenue** : pour la barre de recherche, piocher des idées sur Internet nous a fait gagner du temps.
 
-### Et Après ?
-On aimerait sécuriser les mots de passe, ajouter une pagination pour la liste des utilisateurs (parce que s’il y en a trop, ça rame), et pourquoi pas laisser les utilisateurs se suivre entre eux ou recevoir des notifications. Bref, il y a encore plein de bonnes idées à cuisiner !
 
-Ce projet nous a appris à jongler avec PHP, AJAX, et les sessions, tout en résolvant des problèmes concrets. On est fiers du résultat, même s’il reste perfectible – un peu comme une première tarte, délicieuse mais avec une pâte qu’on pourrait encore affiner.
+Ce projet nous a appris à jongler avec PHP, AJAX, et les sessions, tout en résolvant des problèmes concrets. On est fiers du résultat, même s’il reste perfectible.
