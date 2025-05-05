@@ -550,12 +550,12 @@ function changerRole(email, username, newRole) {
             <p id="recetteelements">  </p>
 
             </div>
-        </div>
+        
 
             <div id="Succes" style="display:none">
             <label>Recette enregistrée avec succès !</label><br>
             </div>
-
+        </div>
       <!-- On va ici cherche la recette que l'on cherche à traduire -->
     <div class="barre-recherche">
         <div id="namerecette2" style="display:<?php echo (isLoggedIn() && in_array('Traducteur', $_SESSION['user']['role'] ?? [])) ? 'block' : 'none'; ?>">
@@ -596,7 +596,7 @@ function changerRole(email, username, newRole) {
     <div class = "barre-recherche">
     <h2>Rechercher une recette</h2>
     <input type="text" id="searchInput" class="search-bar" placeholder="Rechercher une recette...">
-    </div>
+    
     <div id="recipeList" class="liste-recettes"></div>
     <div id="recipeDetails" class="recipe-details"></div>
 
@@ -710,6 +710,7 @@ function changerRole(email, username, newRole) {
 
         
         </script>
+        </div>
         <!-- Gestion des utilisateurs par l'admin -->
 
             <br><br>
