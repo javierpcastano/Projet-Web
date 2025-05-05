@@ -172,11 +172,10 @@ La **gestion des sessions** nous a possé beaucoup de problèmes, surtout le fon
 
 ## 5. Conclusion
 
-Ce projet, c’était comme préparer une recette compliquée : parfois, ça rate, mais on apprend à chaque essai. On a réussi à livrer une application qui fonctionne, avec des fonctionnalités sympas comme les likes, les commentaires, et une gestion des recettes au top. Les appels AJAX ont rendu l’expérience fluide, et l’interface admin donne un vrai contrôle.
+On a réussi à livrer une application qui fonctionne, avec des fonctionnalités sympas comme les likes, les commentaires, et une gestion des recettes. Les appels AJAX ont rendu l’expérience fluide, et l’interface admin donne un vrai contrôle.
 
 ### Les Leçons Apprises :
-- **Sessions, c’est pas inné** : on a galéré à mettre en place les sessions et à garder les rôles cohérents, mais maintenant, on sait comment faire.
-- **Sécurité à améliorer** : stocker les mots de passe en clair, c’est une erreur qu’on ne refera pas.
+- **Sessions** : on a galéré à mettre en place les sessions et à garder les rôles cohérents, mais maintenant, on sait comment faire.
 - **Inspiration bienvenue** : pour la barre de recherche, piocher des idées sur Internet nous a fait gagner du temps.
 
 
