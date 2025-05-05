@@ -35,7 +35,7 @@ function changerRole(email, username, newRole) {
                 location.reload();
             }
         } else {
-            alert("Erreur: " + (response.message || "Échec de la modification"));
+            alert("Erreur: Échec de la modification");
         }
     }).fail(function(error) {
         console.error("Erreur:", error);
@@ -272,14 +272,14 @@ function changerRole(email, username, newRole) {
         }).done(function(response) {
             console.log("Réponse du serveur:", response);
             if(response.status === "success") {
-                $("#Succes2").show();
-                $("#formulaire2").hide();
+                $("#Succes2").css("display", "block");
+                $("#formulaire2").css("display", "none");
             } else {
-                $("#recetteelements2").html("<span class='error'>" + (response.message || "Erreur inconnue") + "</span>");
+                $("#recetteelements2").html("Erreur inconnue");
             }
         }).fail(function(error) {
             console.error("Erreur:", error);
-            $("#recetteelements2").html("<span class='error'>Échec de la connexion au serveur</span>");
+            $("#message").html("<span class='ko'> Error: network problem </span>");
         });
     }
 
@@ -674,12 +674,6 @@ function changerRole(email, username, newRole) {
         <button class="ajout-commentaire" data-name="${recipe.nameFR || recipe.name}" onclick="Commentaire(this)">Ajouter</button>
     </div>
 </div>
-
-
-
-
-
-
             `;
 
             $("#recipeDetails").html(detailsHTML).fadeIn();
