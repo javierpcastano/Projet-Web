@@ -116,7 +116,7 @@ function Fav(button) {
 }
 ```
 
-### 3.4. Interface Admin
+### 3.4. Interface Admin (Directeur)
 
 Les admins ont des pouvoirs spéciaux pour gérer les utilisateurs.
 
