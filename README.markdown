@@ -93,7 +93,7 @@ file_put_contents("recettes.json", json_encode($data, JSON_PRETTY_PRINT));
 
 #### Problèmes Rencontrés :
 - **Ingrédients mal formatés** : les ingrédients arrivent en JSON, mais ça plantait si le format n’était pas parfait. On a ajouté `JSON.stringify()` côté JavaScript pour être sûrs.
-- **Traductions désynchronisées** : mettre à jour une traduction demandait de trouver la bonne recette dans `recettes.json`. On a peaufiné la boucle dans `isrecetteupdate.php` pour que ça marche nickel.
+- **Traductions désynchronisées** : mettre à jour une traduction demandait de trouver la bonne recette dans `recettes.json`. On a nettoyé la boucle dans `isrecetteupdate.php` pour avoir un bon fonctionnement.
 
 ### 3.3. Likes et Commentaires
 
