@@ -2,14 +2,12 @@
 
 ## 1. Introduction
 
-Imaginez une plateforme en ligne où vous pouvez non seulement trouver des recettes pour vos plats préférés, mais aussi les partager, les aimer, et discuter avec d’autres passionnés de cuisine. C’est l’idée derrière notre projet : une application web interactive de recettes culinaires, développée avec des technologies comme **PHP**, **JavaScript (AJAX)**, **HTML**, et **CSS**. Tout repose sur un fichier central, `projet.php`, qui fait office de cœur de l’application. Voici ce qu’il permet de faire :
+Ce rapport explore les coulisses techniques du projet de site de recettes culinaires, en se concentrant sur les choix d’implémentation, les obstacles surmontés et les stratégies adoptées. L’accent est mis ici sur l’analyse de l’architecture, l’utilisation des technologies comme AJAX, et les enseignements tirés de cette expérience de développement. Tout repose sur un fichier central, `projet.php`, qui fait office de cœur de l’application. Voici ce qu’il permet de faire :
 
 - **S’identifier ou s’inscrire** : un système d’authentification pour sécuriser l’accès.
 - **Gérer des recettes** : ajouter, modifier ou chercher des idées culinaires.
 - **Interagir** : liker une recette ou laisser un commentaire.
 - **Administrer** : une interface spéciale pour gérer les utilisateurs et leurs rôles.
-
-Ce rapport va plonger dans les détails techniques, expliquer comment les fonctions AJAX rendent tout cela possible, et partager les galères qu’on a rencontrées – avec les solutions qu’on a trouvées pour s’en sortir !
 
 ## 2. Architecture Technique
 
