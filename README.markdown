@@ -160,7 +160,7 @@ $("#searchInput").on("input", function() {
 });
 ```
 
-On s’est inspirés de code trouvé sur Internet, notamment pour gérer les accents avec `normalize("NFD")`. Ça nous a bien dépannés !
+On s’est inspirés de code trouvé sur Internet, notamment pour gérer les accents avec `normalize("NFD")`.
 
 ## 4. Les Grosses Difficultés : Les Sessions et les Rôles
 
