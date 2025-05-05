@@ -30,9 +30,9 @@ On a organisé le projet pour que tout soit clair et facile à maintenir. Voici 
 
 Chaque fichier a son rôle, comme une équipe de cuisine où chacun sait ce qu’il doit faire.
 
-## 3. Les Fonctions AJAX : Comment Ça Marche ?
+## 3. Les Fonctions AJAX :
 
-AJAX, c’est la magie qui rend l’application vivante : pas besoin de recharger la page pour voir des mises à jour. Voici comment on l’a utilisé, avec les défis qu’on a dû relever.
+Voici comment on a utilisé les appels AJAX, avec les défis qu’on a dû relever.
 
 ### 3.1. Authentification
 
