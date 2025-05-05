@@ -63,7 +63,7 @@ function connection() {
 }
 ```
 
-Si tout est bon, la page se recharge, et vous êtes connecté !
+Si tout est bon, la page se recharge, et vous êtes connecté, avec la mise a jour de la page en fonction du role de l'utilisateur.
 
 #### Difficultés :
 - **Sessions qui disparaissaient** : au début, on se faisait déconnecter sans raison. On a compris que `session_start()` manquait dans certains fichiers. Maintenant, on l’ajoute partout où c’est nécessaire.
