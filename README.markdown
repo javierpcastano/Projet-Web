@@ -1,4 +1,4 @@
-# Rapport Technique : Projet de Site de Recettes Culinaires
+# Rapport: Projet WEB
 
 ## 1. Introduction
 
